@@ -1,0 +1,176 @@
+swagger: '2.0'
+info:
+  description: This project aims to clone simple features of stackoverflow
+  version: 1.0.0
+  title: Softcom Backend Technical Challenge API
+  contact:
+    email: abassade@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: virtserver.swaggerhub.com
+basePath: /Abassade/stackoverflow-api/1.0.0
+tags:
+  - name: user
+    description: All user's authentications here
+  - name: question
+    description: User ask question (auth required)
+  - name: answer
+    description: User can answer any questions (auth required)
+schemes:
+  - https
+  - http
+paths:
+  /user/signup:
+    post:
+      tags:
+        - user
+      summary: user sign up
+      description: |
+        By passing the appropriate sign up detail to the system, user account registration will be successful
+      operationId: userSignup
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user detail
+          description: required
+          required: true
+          schema:
+            $ref: '#/definitions/signUpRequestBody'
+      responses:
+        '201':
+          description: success message for signing up
+          schema:
+            items:
+              $ref: '#/definitions/sucessSignupMessage'
+        '400':
+          description: bad request input
+          schema:
+            items:
+              $ref: '#/definitions/badRequestSignupMessage'
+        '500':
+          description: internal server error
+  /user/signin:
+    post:
+      tags:
+        - user
+      summary: user sign in
+      description: |
+        By passing the appropriate sign in detail to the system, user will be logged in successfully
+      operationId: userSignin
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user login detail
+          description: required
+          required: true
+          schema:
+            $ref: '#/definitions/signInRequestBody'
+      responses:
+        '200':
+          description: success message for signing in
+          schema:
+            items:
+              $ref: '#/definitions/sucessSigninMessage'
+        '400':
+          description: bad request input
+        '500':
+          description: internal server error
+definitions:
+  sucessSignupMessage:
+    type: object
+    required:
+      - error
+      - code
+      - data
+      - message
+    properties:
+      error:
+        type: boolean
+        example: false
+      code:
+        type: number
+        example: 201
+      data:
+        type: string
+        format: email
+        example: test@gmail.com
+      message:
+        type: string
+        example: successfully registered a new user
+  sucessSigninMessage:
+    type: object
+    required:
+      - error
+      - code
+      - data
+      - message
+    properties:
+      error:
+        type: boolean
+        example: false
+      code:
+        type: number
+        example: 200
+      data:
+        type: string
+        example: 5eb67dbea5b8e0ea338bc24e
+      message:
+        type: string
+        example: user successfully logged in
+  badRequestSignupMessage:
+    type: object
+    required:
+      - error
+      - code
+      - data
+      - message
+    properties:
+      error:
+        type: boolean
+        example: true
+      code:
+        type: number
+        example: 401
+      message:
+        type: string
+        example: user already exists
+  signUpRequestBody:
+    type: object
+    required:
+      - email
+      - password
+      - cPassword
+      - firstname
+      - lastname
+    properties:
+      email:
+        type: string
+        example: softcomng@gmail.com
+      password:
+        type: string
+        example: softcom
+      lastname:
+        type: string
+        example: com
+      firstname:
+        type: string
+        example: soft
+  signInRequestBody:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: softcomng@gmail.com
+      password:
+        type: string
+        example: softcom
