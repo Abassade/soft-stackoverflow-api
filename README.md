@@ -48,8 +48,9 @@ npm test
 ### Testing Overall API
 To test the overall API, both postman collection and open API doc are provided below
 
-Open API link: https://app.swaggerhub.com/apis-docs/Abassade/stackoverflow-api/1.0.0
-Postman collection link: https://www.getpostman.com/collections/39a6409da37008e58500
+- Open API link: https://app.swaggerhub.com/apis-docs/Abassade/stackoverflow-api/1.0.0
+- Postman collection link: https://www.getpostman.com/collections/39a6409da37008e58500
+
 ---
 ### User Routes (They are all HTTP)
 
