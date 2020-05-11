@@ -36,11 +36,20 @@ npm install
 ## Operating instruction
 - Dont't forget to create a `.env` file, update it with the content of `sample.env` file in the project directory.
 - To start this software, run the first command below to get the code running at development level
+- And to run the test, run the second command below. Jest and Supertest are used
 
 ```bash
 npm start
 ```
 
+```bash
+npm test
+```
+### Testing Overall API
+To test the overall API, both postman collection and open API doc are provided below
+
+```Open API link: https://app.swaggerhub.com/apis-docs/Abassade/stackoverflow-api/1.0.0```
+```Postman collection link: https://www.getpostman.com/collections/39a6409da37008e58500```
 ---
 ### User Routes (They are all HTTP)
 
@@ -207,7 +216,7 @@ sample unsubscription call - ```localhost:8080/v1/question/```
 
 **Search question**
 
-Questions can be searched without auth
+Questions can be searched without authentication
 
 sample call - ```localhost:8080/v1/question/search?keywords=coding```
 
@@ -289,7 +298,7 @@ sample call - ```localhost:8080/v1/answer```
 
 **View all answers**
 
-partner can initiate a request
+anybody can view all answers, it is not authenticated.
 
 sample call - ```localhost:8080/v1/answer```
 
@@ -387,6 +396,7 @@ sample api call ```localhost:8080/v1/services/stat```
 ---
 
 #### Vote Endpoints
+Questions can either be upvoted or downvoted, in this flow, questionId that you want to upvote is required as well as the option of upvoting or downvoting. The author of the question is not authorized to vote, someone else can do that.
 
 Name                                         | Endpoint
 ------------------------------------------- | -------------------------------------------
