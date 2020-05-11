@@ -72,26 +72,6 @@ describe('User sign in', () => {
 });
 
 describe('Questions category', () => {
-  beforeEach(async (done) => {
-    const resp = await request.post('/v1/user/signin')
-      .send({
-        email: 'razaq@gmail.com',
-        password: 'goldman',
-      });
-    resp.set('Cookie', [`authorization=${resp.body.token}`, 'abass=aaa']);
-    done();
-  });
-
-  it('should respond with not authorized to add a new question to the db', async (dn) => {
-    await Question.deleteMany();
-    const question = {
-      question: 'How can we make a million in a day?',
-    };
-    const res = await request.post('/v1/question').send(question);
-    expect(res.status).toBe(200);
-    expect(res.body.error).toBe(false);
-    dn();
-  });
   it('should respond with not authorized to add a new question to the db', async (done) => {
     await Question.deleteMany();
     const question = {
@@ -112,12 +92,10 @@ describe('Questions category', () => {
     done();
   });
 
-  it('Should return with a list of questions related to the keywords', async (done) => {
-    const res = await request.get('/v1/question/search?keywords=coding');
-    const type = typeof (res.body.data);
-    expect(res.status).toBe(200);
-    expect(res.body.error).toBe(false);
-    expect(type).toBe('object');
+  it('Should return with a 400 error code for not passing keywords', async (done) => {
+    const res = await request.get('/v1/question/search?keywords=');
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe(true);
     done();
   });
 });
@@ -135,6 +113,22 @@ describe('Answer endpoints', () => {
     const res = await request.get('/v1/answer');
     expect(res.status).toBe(200);
     expect(res.body.error).toBe(false);
+    done();
+  });
+
+  it('Should return with a list of answers related to the keywords', async (done) => {
+    const res = await request.get('/v1/answer/search?keywords=yes');
+    const type = typeof (res.body.data);
+    expect(res.status).toBe(200);
+    expect(res.body.error).toBe(false);
+    expect(type).toBe('object');
+    done();
+  });
+
+  it('Should return with a 400 error code for not passing keywords', async (done) => {
+    const res = await request.get('/v1/answer/search?keywords=');
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe(true);
     done();
   });
 });

@@ -12,16 +12,18 @@ host: virtserver.swaggerhub.com
 basePath: /Abassade/stackoverflow-api/1.0.0
 tags:
   - name: user
-    description: All user's authentications here
+    description: All user's authentications here with an endpoint to search for users
   - name: question
-    description: User ask question (auth required)
+    description: User ask question (auth required to ask question)
   - name: answer
-    description: User can answer any questions (auth required)
+    description: User can answer any questions (auth required to answer questions)
+  - name: votes
+    description: User can up or down vote a question (auth required to answer questions)
 schemes:
   - https
   - http
 paths:
-  /user/signup:
+  /v1/user/signup:
     post:
       tags:
         - user
@@ -44,16 +46,14 @@ paths:
         '201':
           description: success message for signing up
           schema:
-            items:
-              $ref: '#/definitions/sucessSignupMessage'
+            $ref: '#/definitions/sucessSignupMessage'
         '400':
           description: bad request input
           schema:
-            items:
-              $ref: '#/definitions/badRequestSignupMessage'
+            $ref: '#/definitions/badRequestSignupMessage'
         '500':
           description: internal server error
-  /user/signin:
+  /v1/user/signin:
     post:
       tags:
         - user
@@ -76,20 +76,233 @@ paths:
         '200':
           description: success message for signing in
           schema:
-            items:
-              $ref: '#/definitions/sucessSigninMessage'
+            $ref: '#/definitions/sucessSigninMessage'
         '400':
           description: bad request input
+        '500':
+          description: internal server error
+  /v1/user/text/search:
+    get:
+      tags:
+        - user
+      summary: search user by keywords
+      description: |
+        By passing keywords as a query param, full text search will be performed and the result based on the query will be returned
+      operationId: seachUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: keywords
+          type: string
+          description: keywords needed to search for
+          required: true
+      responses:
+        '200':
+          description: success message searching successfully
+          schema:
+            $ref: '#/definitions/userSeachSucessMessage'
+        '404':
+          description: No record found
+        '500':
+          description: internal server error
+  /v1/question:
+    post:
+      tags:
+        - question
+      summary: user ask question
+      description: |
+        Enter question from the request body to ask question on the platform (auth required)
+      operationId: askQuestion
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: question
+          description: required
+          required: true
+          schema:
+            type: object
+            required:
+              - question
+            properties:
+              question:
+                type: string
+                example: 'How can i make money with coding API'
+      responses:
+        '200':
+          description: user successfully asked question
+        '400':
+          description: bad request input
+        '500':
+          description: internal server error
+  /v1/question/:
+    get:
+      tags:
+        - question
+      summary: user views questions
+      description: |
+        User can view all questions asked (no auth required)
+      operationId: viewQuestion
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: questions successfully fetched
+          schema:
+            $ref: '#/definitions/viewQuestionsSeachSucessMessage'
+          
+        '400':
+          description: bad request input
+        '500':
+          description: internal server error
+  /v1/question/text/search:
+    get:
+      tags:
+        - question
+      summary: search question by keywords
+      description: |
+        By passing keywords as a query param, full text search will be performed and the result based on the query will be returned
+      operationId: seachQuestion
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: keywords
+          type: string
+          description: keywords needed to search for
+          required: true
+      responses:
+        '200':
+          description: success message searching successfully
+        '404':
+          description: No record found
+        '500':
+          description: internal server error
+  /v1/answer:
+    post:
+      tags:
+        - answer
+      summary: user asnwers question
+      description: |
+        Enter questionId and answer from the request body to answer a question on the platform (auth required)
+      operationId: answerQuestion
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: answer to question
+          description: required
+          required: true
+          schema:
+            type: object
+            required:
+              - answer
+              - questionId
+            properties:
+              questionId:
+                type: string
+                example: '5eb29434d7464cc5268e2b3a'
+              answer:
+                type: string
+                example: 'We can make money from coding API by making it an open source'
+      responses:
+        '200':
+          description: user successfully answered a question
+        '400':
+          description: bad request input
+        '500':
+          description: internal server error
+  /v1/answer/:
+    get:
+      tags:
+        - answer
+      summary: user views answers
+      description: |
+        User can view all answers provided to questions (no auth required)
+      operationId: searchAnswers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: answers successfully fetched
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /v1/answer/text/search:
+    get:
+      tags:
+        - answer
+      summary: search answers by keywords
+      description: |
+        By passing keywords as a query param, full text search will be performed and the result based on the query will be returned
+      operationId: seachAnswers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: keywords
+          type: string
+          description: keywords needed to search for
+          required: true
+      responses:
+        '200':
+          description: success message searching successfully
+        '404':
+          description: No record found
+        '500':
+          description: internal server error
+  /v1/question/vote:
+    get:
+      tags:
+        - votes
+      summary: search question by keywords
+      description: |
+        Passing questionId and vote as either up or down on query param will effect vote on question collection
+      operationId: voteQuestion
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: questionId
+          type: string
+          description: questionId needed to vote
+          required: true
+        - in: query
+          name: vote
+          type: string
+          enum:
+            - up
+            - down
+          description: vote can be either up or down is needed
+          required: true
+      responses:
+        '200':
+          description: success message for voting
+        '400':
+          description: bad request
         '500':
           description: internal server error
 definitions:
   sucessSignupMessage:
     type: object
-    required:
-      - error
-      - code
-      - data
-      - message
     properties:
       error:
         type: boolean
@@ -156,12 +369,12 @@ definitions:
       password:
         type: string
         example: softcom
-      lastname:
-        type: string
-        example: com
       firstname:
         type: string
         example: soft
+      lastname:
+        type: string
+        example: com
   signInRequestBody:
     type: object
     required:
@@ -174,3 +387,83 @@ definitions:
       password:
         type: string
         example: softcom
+  userSeachSucessMessage:
+    type: object
+    required:
+      - error
+      - code
+      - data
+      - message
+    properties:
+      error:
+        type: boolean
+        example: false
+      code:
+        type: number
+        example: 200
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: '5eb67dbea5b8e0ea338bc24e'
+            email:
+              type: string
+              example: 'softcomng@gmail.com'
+            firstname:
+              type: string
+              example: 'soft'
+            lastname:
+              type: string
+              example: 'com'
+            createdAt:
+              type: string
+              example: '2020-05-09T09:51:49.849Z'
+            updatedAt:
+              type: string
+              example: '2020-05-09T09:51:49.849Z'
+      message:
+        type: string
+        example: fetched successfully
+  viewQuestionsSeachSucessMessage:
+    type: object
+    required:
+      - error
+      - code
+      - data
+      - message
+    properties:
+      error:
+        type: boolean
+        example: false
+      code:
+        type: number
+        example: 200
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: '5eb67dbea5b8e0ea338bc24e'
+            votes:
+              type: number
+              example: 6
+            user:
+              type: string
+              example: '5eb67dbea5b8e0ea338bc24e'
+            question:
+              type: string
+              example: 'why is code so sweet?'
+            createdAt:
+              type: string
+              example: '2020-05-09T09:51:49.849Z'
+            updatedAt:
+              type: string
+              example: '2020-05-09T09:51:49.849Z'
+      message:
+        type: string
+        example: 'questions fetched successfully'

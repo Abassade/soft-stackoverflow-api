@@ -37,7 +37,7 @@ class Question extends QuestionService {
     try {
       const params = {
         fields: {
-          cPassword: 0, password: 0, createdAt: 0, updatedAt: 0, __v: 0,
+          cPassword: 0, password: 0, __v: 0,
         },
         populate: { path: 'user', field: 'firstname lastname email' },
       };
@@ -99,6 +99,9 @@ class Question extends QuestionService {
   async searchEngine(req, res) {
     const { keywords } = req.query;
     try {
+      if (!keywords) {
+        return Response.failure(res, { message: 'keywords required as query param' }, httpCode.BAD_REQUEST);
+      }
       const param = {
         q: { $text: { $search: keywords } },
         fields: { __v: 0 },

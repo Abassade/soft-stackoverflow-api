@@ -96,7 +96,7 @@ class User extends UserService {
       return Response.success(res, {
         message: 'no result for the keywords',
         response: [],
-      }, httpCode.OK);
+      }, httpCode.NOT_FOUND);
     } catch (error) {
       logger.info(error);
       return Response.failure(res, { message: 'unable to search collection', response: error }, httpCode.INTERNAL_SERVER_ERROR);

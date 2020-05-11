@@ -62,6 +62,9 @@ class Answer extends AnswerService {
   async searchEngine(req, res) {
     const { keywords } = req.query;
     try {
+      if (!keywords) {
+        return Response.failure(res, { message: 'keywords required as query param' }, httpCode.BAD_REQUEST);
+      }
       const param = {
         q: { $text: { $search: keywords } },
         fields: { __v: 0 },
@@ -79,7 +82,7 @@ class Answer extends AnswerService {
       return Response.success(res, {
         message: 'no result for the keywords',
         response: [],
-      }, httpCode.OK);
+      }, httpCode.NOT_FOUND);
     } catch (error) {
       logger.info(error);
       return Response.failure(res, { message: 'unable to search collection', response: error }, httpCode.INTERNAL_SERVER_ERROR);
