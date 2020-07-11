@@ -21,7 +21,7 @@ require('./lib/mongo');
 require('./routes')(app);
 
 app.get('/', async (req, res) => {
-  res.status(200).send('welcome to blusalt-api');
+  res.status(200).send('welcome to stackoverflow-api');
 });
 
 // error handling must be the last middleware
