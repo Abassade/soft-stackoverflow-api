@@ -146,13 +146,6 @@ class MongoDBHelper {
     });
   }
 
-  /**
-   * Updates a SINGLE RECORD in the MongoDB instance's DB based on some conditional criteria
-   *
-   * @param params - the conditional parameters
-   * @param data - the data to update
-   * @returns {Promise}
-   */
   update(params, data) {
     return new Promise((resolve, reject) => this.mongodbModel.findOneAndUpdate(
       params,

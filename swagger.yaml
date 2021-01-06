@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: This project aims to clone simple features of stackoverflow
   version: 1.0.0
-  title: Softcom Backend Technical Challenge API
+  title: Stackoverflow clone API
   contact:
     email: abassade@gmail.com
   license:
