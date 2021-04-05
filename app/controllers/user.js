@@ -68,13 +68,41 @@ class User extends UserService {
           const token = jwt.sign({ email: record.email, id: record._id },
             process.env.JWT_SECRET, { expiresIn: '12h' });
           res.cookie('authorization', token);
-          return Response.success(res, { message: 'user successfully logged in', response: token }, httpCode.OK);
+          return Response.success(res, { message: 'user successfully logged in', response: { token, id: record._id } }, httpCode.OK);
         }
         return Response.failure(res, { message: 'incorrect password' }, httpCode.UNAUTHORIZED);
       });
     } catch (error) {
       logger.info(error);
       return Response.failure(res, { message: 'unable to check client by email from db', response: error }, httpCode.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getUserRecord(req, res) {
+    try {
+      const { userId } = req.params;
+      const result = await this.getUser({ _id: userId });
+      if (!result) {
+        return Response.failure(res, {
+          message: 'user not found',
+          response: result,
+        }, httpCode.BAD_REQUEST);
+      }
+      const resp = {
+        email: result.email,
+        firstname: result.firstname,
+        lastname: result.lastname,
+        createdAt: result.createdAt,
+        updatedAt: result.updatedAt,
+        userId: result._id,
+      };
+      Response.success(res, {
+        message: 'user fetched successfully',
+        response: resp,
+      }, httpCode.OK);
+    } catch (error) {
+      logger.info(error);
+      return Response.failure(res, { message: 'unable to query User collection', data: error }, httpCode.INTERNAL_SERVER_ERROR);
     }
   }
 

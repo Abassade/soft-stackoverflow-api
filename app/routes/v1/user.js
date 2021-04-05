@@ -12,6 +12,8 @@ route.post('/signin', asyncHandler((req, res) => UserController.userSignIn(req, 
 
 route.post('/signup', asyncHandler((req, res) => UserController.userSignUp(req, res)));
 
+route.get('/:userId', asyncHandler((req, res) => UserController.getUserRecord(req, res)));
+
 route.get('/text/search', asyncHandler((req, res) => UserController.searchEngine(req, res)));
 
 
